@@ -46,13 +46,46 @@
 						No Categories Found!
 					</strong>
 				</div>
-				<a href="#" class="alert-link"></a>
+
 
 			</div>
 		}
 		else
 		{
+			<div class="table-responsive">
+				<table class="table table-row-dashed table-row-gray-300 gy-7">
+					<thead>
+						<tr class="fw-bold fs-6 text-gray-800">
+							<th>Name</th>
+							<th>Status</th>
+							<th>Created On</th>
+							<th>Last Updated On</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var category in Model)
+						{
+							<tr>
+								<td>@category.Name</td>
+								<td>
+									<span class="badge badge-light-@(category.IsDeleted ? "danger" : "success")">
+										@(category.IsDeleted ? "Deleted" : "Available")
+									</span>
+								</td>
+								<td>@category.CreatedOn</td>
+								<td>@category.LastUpdatedOn</td>
+								<td>
+									<a class="btn btn-sm btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary" asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id">
+										Edit
+									</a>
 
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
 		}
 	</div>
 </div>
