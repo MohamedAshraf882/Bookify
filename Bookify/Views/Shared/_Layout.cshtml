@@ -4,17 +4,16 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - Bookify</title>
-
-	<!--begin::Fonts(mandatory for all pages)-->
+	<!--begin::Fonts-->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
 	<!--end::Fonts-->
-	<!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
+	<!--begin::Global Stylesheets Bundle(used by all pages)-->
 	<link rel="stylesheet" href="~/assets/css/plugins.bundle.css" type="text/css" />
 	<link rel="stylesheet" href="~/assets/css/style.bundle.css" type="text/css" />
 	<!--end::Global Stylesheets Bundle-->
-
+	<link rel="stylesheet" href="~/lib/animate.css/animate.min.css" />
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-	<link rel="stylesheet" href="~/Bookify.styles.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/Bookify.Web.styles.css" asp-append-version="true" />
 </head>
 <body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed">
 	<!--begin::Theme mode setup on page load-->
@@ -59,11 +58,15 @@
 		<!--end::Svg Icon-->
 	</div>
 	<!--end::Scrolltop-->
-	
-	<!--begin::Global Javascript Bundle(mandatory for all pages)-->
+
+	<span id="Message" class="d-none">@TempData["Message"]</span>
+	<partial name="_Modal" />
+	<script>var hostUrl = "assets/";</script>
+	<!--begin::Global Javascript Bundle(used by all pages)-->
 	<script src="~/assets/js/plugins.bundle.js"></script>
 	<script src="~/assets/js/scripts.bundle.js"></script>
 	<!--end::Global Javascript Bundle-->
+	<script src="~/lib/bootbox.js/bootbox.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

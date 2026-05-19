@@ -1,22 +1,60 @@
-html {
-  font-size: 14px;
+﻿html {
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+.header {
+    background: linear-gradient(90deg, #4F46E5, #06B6D4);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: box-shadow 0.3s ease;
+}
+/* Hover effect على الـ buttons */
+.btn {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+ .btn:active {
+        transform: translateY(0px);
+        box-shadow: none;
+    }
+
+/* Primary button */
+.btn-primary:hover {
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+}
+
+/* Danger button */
+.btn-danger:hover {
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+/* Success button */
+.btn-success:hover {
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
 }

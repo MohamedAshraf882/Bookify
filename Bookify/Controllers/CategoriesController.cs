@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bookify.Web.Filters;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookify.Controllers
@@ -22,10 +23,11 @@ namespace Bookify.Controllers
         }
 
         [HttpGet]
+        [AjaxOnly]
         public IActionResult Create()
         {
 
-            return View("Form");
+            return PartialView("_Form");
 
         }
 
@@ -35,7 +37,8 @@ namespace Bookify.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("Form", model);
+                return BadRequest();
+                //return View("_Form", model);
             }
 
             var category = new Category();
@@ -44,11 +47,13 @@ namespace Bookify.Controllers
             _context.Categories.Add(category);
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+            return PartialView("_CategoryRow", category);
+            //return RedirectToAction(nameof(Index));
 
         }
 
         [HttpGet]
+        [AjaxOnly]
         public IActionResult Edit(int id)
         {
             var category = _context.Categories.Find(id);
@@ -60,7 +65,7 @@ namespace Bookify.Controllers
                 Name = category.Name,
             };
 
-            return View("Form", model);
+            return PartialView("_Form", model);
 
         }
         [HttpPost]
@@ -69,7 +74,8 @@ namespace Bookify.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("Form", model);
+                return BadRequest();
+                // return View("_Form", model);
             }
             var category = _context.Categories.Find(model.ID);
             if(category is null)
@@ -80,7 +86,25 @@ namespace Bookify.Controllers
             category.LastUpdatedOn = DateTime.Now;
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+                return PartialView("_CategoryRow", category);
+            //return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ToggleStatus(int id)
+        {
+            var category = _context.Categories.Find(id);
+
+            if (category is null)
+                return NotFound();
+
+            category.IsDeleted = !category.IsDeleted;
+            category.LastUpdatedOn = DateTime.Now;
+
+            _context.SaveChanges();
+
+            return Ok(category.LastUpdatedOn.ToString());
         }
 
     }
