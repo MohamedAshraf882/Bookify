@@ -1,15 +1,13 @@
-﻿using Bookify.Web.Filters;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-namespace Bookify.Controllers
+﻿namespace Bookify.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public CategoriesController(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+        public CategoriesController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -17,8 +15,21 @@ namespace Bookify.Controllers
         {
             //TODO:use viewmodel
 
-            var categories = _context.Categories.AsNoTracking().ToList();
-            return View(categories);
+            var categories = _context.Categories
+            //.Select(c => new CategoryViewModel
+            //{
+            //    Id = c.Id,
+            //    Name = c.Name,
+            //    IsDeleted = c.IsDeleted,
+            //    CreatedOn = c.CreatedOn,
+            //    LastUpdatedOn = c.LastUpdatedOn
+
+            //})
+            .AsNoTracking()
+            .ToList();
+            //use auto mapper
+            var viewModel = _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
+            return View(viewModel);
 
         }
 
@@ -41,13 +52,24 @@ namespace Bookify.Controllers
                 //return View("_Form", model);
             }
 
-            var category = new Category();
-            category.Name = model.Name;
+            //var category = new Category();
+            //category.Name = model.Name;
+            var category=_mapper.Map<Category>(model);
 
             _context.Categories.Add(category);
             _context.SaveChanges();
 
-            return PartialView("_CategoryRow", category);
+            //var categoryViewModel = new CategoryViewModel
+            //{
+            //    Id = category.Id,
+            //    Name = category.Name,
+            //    IsDeleted = category.IsDeleted,
+            //    CreatedOn = category.CreatedOn,
+            //    LastUpdatedOn = category.LastUpdatedOn
+            //};
+            var categoryViewModel = _mapper.Map<CategoryViewModel>(category);
+
+            return PartialView("_CategoryRow", categoryViewModel);
             //return RedirectToAction(nameof(Index));
 
         }
@@ -59,11 +81,12 @@ namespace Bookify.Controllers
             var category = _context.Categories.Find(id);
             if (category is null)
                 return NotFound();
-            var model = new CategoryFormViewModel
-            {
-                ID = id,
-                Name = category.Name,
-            };
+            //var model = new CategoryFormViewModel
+            //{
+            //    ID = id,
+            //    Name = category.Name,
+            //};
+            var model = _mapper.Map<CategoryFormViewModel>(category);
 
             return PartialView("_Form", model);
 
@@ -82,11 +105,24 @@ namespace Bookify.Controllers
             {
                 return NotFound();
             }
-            category.Name = model.Name;
+            //category.Name = model.Name;
+            category = _mapper.Map(model, category);
             category.LastUpdatedOn = DateTime.Now;
+
             _context.SaveChanges();
 
-                return PartialView("_CategoryRow", category);
+            //var categoryViewModel = new CategoryViewModel
+            //{
+            //    Id = category.Id,
+            //    Name = category.Name,
+            //    IsDeleted = category.IsDeleted,
+            //    CreatedOn = category.CreatedOn,
+            //    LastUpdatedOn = category.LastUpdatedOn
+            //};
+            var categoryViewModel = _mapper.Map<CategoryViewModel>(category);
+
+            return PartialView("_CategoryRow", categoryViewModel);
+            // return PartialView("_CategoryRow", category);
             //return RedirectToAction(nameof(Index));
         }
 
@@ -106,6 +142,13 @@ namespace Bookify.Controllers
 
             return Ok(category.LastUpdatedOn.ToString());
         }
+        public IActionResult AllowItem(CategoryFormViewModel model)
+        {
+            var category = _context.Categories.SingleOrDefault(c => c.Name == model.Name);
+            var isAllowed = category is null || category.Id.Equals(model.ID);
+            return Json(isAllowed);
+        }
+
 
     }
 }

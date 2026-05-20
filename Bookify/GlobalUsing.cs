@@ -2,3 +2,8 @@
 global using Bookify.Core.ViewModels;
 global using Bookify.Data;
 global using Bookify.Core.Models;
+global using AutoMapper;
+global using Bookify.Core.Mapping;
+global using Bookify.Web.Filters;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
