@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bookify.Consts;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bookify.Core.ViewModels
 {
@@ -7,8 +8,8 @@ namespace Bookify.Core.ViewModels
 
         public int ID { get; set; }
 
-        [Remote( "AllowItem", null,AdditionalFields ="ID", ErrorMessage = "This name is already exist.")]
-        [MaxLength(100, ErrorMessage = "Max length Cannot be more 100 chr.")]
-        public string Name { get; set; }
+        [Remote("AllowItem", null!, AdditionalFields = "ID", ErrorMessage = Errors.Duplicated)]
+        [MaxLength(100, ErrorMessage = Errors.MaxLength), Display(Name = "Category")]
+        public string Name { get; set; } = null!;
     }
 }

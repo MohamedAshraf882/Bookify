@@ -18,5 +18,8 @@ namespace Bookify.Data
             
         }
         public DbSet<Category> Categories { get; set; }
+
+        public DbSet<Author> Authors { get; set; }
+        
     }
 }

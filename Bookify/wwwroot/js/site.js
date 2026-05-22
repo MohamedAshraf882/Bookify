@@ -41,8 +41,7 @@ function onModalSuccess(row) {
     var newRow = $(row);
     datatable.row.add(newRow).draw();
 
-    KTMenu.init();
-    KTMenu.initHandlers();
+    KTMenu.createInstances();
 }
 function onModalComplete() {
     $('body :submit').prop('disabled', false);
@@ -185,8 +184,6 @@ $(document).ready(function () {
 });
 //handle toggle status
 $(document).ready(function () {
-    $('table').DataTable();
-
     $('body').delegate('.js-toggle-status', 'click', function () {
         var btn = $(this);
 
