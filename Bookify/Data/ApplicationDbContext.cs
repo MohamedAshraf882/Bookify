@@ -13,13 +13,18 @@ namespace Bookify.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<BookCategory>().HasKey(b => new { b.BookId, b.CategoryId });
            // builder.Entity<Category>().Property(c=>c.CreatedOn).HasDefaultValueSql("GETDATE()");
             base.OnModelCreating(builder);
             
         }
+
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<Author> Authors { get; set; }
+        public DbSet<Book>Books{ get; set; }
+        public DbSet<BookCategory> BookCategories { get; set; }
+     
         
     }
 }

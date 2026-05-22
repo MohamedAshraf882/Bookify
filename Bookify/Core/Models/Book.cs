@@ -1,5 +1,7 @@
 ﻿namespace Bookify.Core.Models
 {
+    //to ignore to Author have the same title for more than one book
+    [Index(nameof(Title),nameof(AuthorId), IsUnique = true)]
     public class Book:BaseModel
     {
         public int Id { get; set; }
@@ -24,6 +26,6 @@
 
         public string Descreption { get; set; }=null!;
 
-         
+        public ICollection<BookCategory> Categories { get; set; } = new List<BookCategory>();
     }
 }
