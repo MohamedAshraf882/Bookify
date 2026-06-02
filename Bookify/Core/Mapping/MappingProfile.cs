@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Bookify.Core.Mapping
 {
@@ -7,12 +8,24 @@ namespace Bookify.Core.Mapping
         public MappingProfile()
         {
             //category mapping
-            CreateMap<Category, CategoryViewModel>();
+           CreateMap<Category, CategoryViewModel>();
            CreateMap< CategoryFormViewModel, Category>().ReverseMap();
+           
+           CreateMap< Category, SelectListItem>()
+                .ForMember(dest=>dest.Value,option=>option.MapFrom(src=>src.Id))
+                .ForMember(dest=>dest.Text,option=>option.MapFrom(src=>src.Name));
 
             //author mapping
             CreateMap<Author, AuthorViewModel>();
             CreateMap<AuthorFormViewModel, Author>().ReverseMap();
+            CreateMap<Author, SelectListItem>()
+                .ForMember(dest => dest.Value, options => options.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Text, option => option.MapFrom(src => src.Name));
+
+            //book mapping
+            CreateMap<BookFormViewModel, Book>().ReverseMap()
+                .ForMember(dest=>dest.Categories,opt=>opt.Ignore());
+           
         }
 
 
