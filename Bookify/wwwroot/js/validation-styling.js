@@ -30,7 +30,6 @@ function applyBootstrapValidation(forms) {
         };
     });
 }
-
 // Apply to any forms already on the page at load time
 $(function () {
     applyBootstrapValidation("form");

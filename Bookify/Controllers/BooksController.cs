@@ -35,9 +35,9 @@ namespace Bookify.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(BookFormViewModel model)
+        public async Task<IActionResult> Create(BookFormViewModel model)
         {
-            
+
             if (!ModelState.IsValid)
             {
                
@@ -66,7 +66,7 @@ namespace Bookify.Controllers
                 var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books", ImageName);
 
                 using var stream=System.IO.File.Create(path);
-                model.Image.CopyTo(stream);
+                await model.Image.CopyToAsync(stream);
 
                 book.ImageUrl = ImageName;
                  
@@ -103,7 +103,7 @@ namespace Bookify.Controllers
 
 
         [HttpPost]
-        public IActionResult Edit(BookFormViewModel model)
+        public async Task<IActionResult> Edit(BookFormViewModel model)
         {
             if (!ModelState.IsValid) 
             {
@@ -143,12 +143,12 @@ namespace Bookify.Controllers
                 var imageName = $"{Guid.NewGuid()}{extension}";
                 var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books", imageName);
                 using var stream = System.IO.File.Create(path);
-                model.Image.CopyTo(stream);
+               await model.Image.CopyToAsync(stream);
 
                 model.ImageUrl = imageName;
 
             }
-            else if (model.Image is null && !string.IsNullOrEmpty(book.ImageUrl))
+            else if (!string.IsNullOrEmpty(book.ImageUrl))
                 model.ImageUrl = book.ImageUrl;
 
 
@@ -174,5 +174,14 @@ namespace Bookify.Controllers
             viewModel.Categories = _mapper.Map<IEnumerable<SelectListItem>>(categories);
             return viewModel;
         }
+
+        public IActionResult IsAllowed(BookFormViewModel model)
+        {
+
+            var book=_context.Books.SingleOrDefault(b=>b.Title==model.Title && b.AuthorId==model.AuthorId);
+            var isallowed=book is null|| book.Id.Equals(model.Id);
+            return Json(isallowed);
+        }
+
     }
 }

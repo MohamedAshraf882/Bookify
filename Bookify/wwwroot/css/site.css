@@ -29,7 +29,7 @@ body {
     z-index: 100;
     transition: box-shadow 0.3s ease;
 }
-/* Hover effect على الـ buttons */
+ /*Hover effect على الـ buttons */
 .btn {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -49,12 +49,12 @@ body {
     box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
 }
 
-/* Danger button */
+/* Danger button*/
 .btn-danger:hover {
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
 }
 
-/* Success button */
+ /*Success button */
 .btn-success:hover {
     box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
 }
@@ -63,3 +63,11 @@ body {
 .form-floating > .form-select{
     padding-bottom:0.225rem;
 }
+
+/*.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+    display: block !important;
+}*/

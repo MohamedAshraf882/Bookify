@@ -1,7 +1,10 @@
+
 var table;
 var datatable;
 var updatedRow;
 var exportedCols = [];
+
+
 
 function showSuccessMessage(message = 'Saved successfully!') {
     Swal.fire({
@@ -145,6 +148,32 @@ var KTDatatables = function () {
 
 
 $(document).ready(function () {
+
+    //tinymce
+
+    if ($('.js-tinymce').length > 0) {
+        var options = { selector: ".js-tinymce", height: "427" };
+
+        if (KTThemeMode.getMode() === "dark") {
+            options["skin"] = "oxide-dark";
+            options["content_css"] = "dark";
+        }
+        tinymce.init(options);
+    }
+
+    //select2
+    $('.js-select2').select2();
+
+    //date picker
+    $('.js-datepicker').daterangepicker({
+        singleDatePicker: true,
+        drops: 'up',
+        maxDate:new Date(),
+      
+    });
+
+
+    //sweetalert
     var message = $('#Message').text();
     if (message !== '') {
         showSuccessMessage(message);
@@ -174,6 +203,7 @@ $(document).ready(function () {
                 $.validator.unobtrusive.parse(modal);
                 applyBootstrapValidation(modal.find('form'));
             },
+
             error: function () {
                 showErrorMessage();
             }

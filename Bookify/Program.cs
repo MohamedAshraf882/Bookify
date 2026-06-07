@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
+using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 namespace Bookify
 {
     public class Program
@@ -18,6 +19,7 @@ namespace Bookify
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+            builder.Services.AddExpressiveAnnotations();
 
             var app = builder.Build();
 

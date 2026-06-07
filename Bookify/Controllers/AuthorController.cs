@@ -42,12 +42,7 @@ namespace Bookify.Controllers
             return PartialView("_AuthorRow", authorviewmodel);
         }
 
-        public IActionResult IsAllowed(AuthorFormViewModel model)
-        {
-            var author = _context.Authors.SingleOrDefault(a => a.Name == model.Name);
-            var IsAllowed = author is null || author.Id.Equals(model.ID);
-            return Json(IsAllowed);
-        }
+       
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -90,6 +85,13 @@ namespace Bookify.Controllers
             _context.SaveChanges();
             var authorviewmodel = _mapper.Map<AuthorViewModel>(author);
             return PartialView("_AuthorRow", authorviewmodel);
+        }
+
+        public IActionResult IsAllowed(AuthorFormViewModel model)
+        {
+            var author = _context.Authors.SingleOrDefault(a => a.Name == model.Name);
+            var IsAllowed = author is null || author.Id.Equals(model.ID);
+            return Json(IsAllowed);
         }
     }
 }
