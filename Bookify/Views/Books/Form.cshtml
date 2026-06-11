@@ -37,7 +37,7 @@
 
 
 			<!--begin::Image input-->
-			<div class="image-input image-input-empty mb-10" data-kt-image-input="true" style="background-image: url(/Images/@(string.IsNullOrEmpty(Model.ImageUrl) ? "image-placeholder.jpg" : $"/Books/{Model.ImageUrl}"))">
+			<div class="image-input image-input-empty mb-10" data-kt-image-input="true" style="background-image: url(@(string.IsNullOrEmpty(Model.ImageUrl) ? "/Images/image-placeholder.jpg" : Model.ImageUrl))">
 				<!--begin::Image preview wrapper-->
 				<div class="image-input-wrapper w-125px h-200px"></div>
 				<!--end::Image preview wrapper-->
@@ -136,7 +136,7 @@
 						<div class="col">
 							<div class="mb-5 ">
 								<div class="form-floating mb-2">
-									<input type="text" class="form-control js-datepicker" placeholder="Publishing Date" asp-for="PublishingDate" />
+									<input type="date" class="form-control " placeholder="Publishing Date" asp-for="PublishingDate" />
 									<label asp-for="PublishingDate"></label>
 								</div>
 								<span asp-validation-for="PublishingDate" class="text-danger d-block"></span>
@@ -200,5 +200,5 @@
 @section Scripts {
 	<script src="~/assets/plugins/tinymce/tinymce.bundle.js"></script>
 	<partial name="_ValidationScriptsPartial" />
-	
+
 }

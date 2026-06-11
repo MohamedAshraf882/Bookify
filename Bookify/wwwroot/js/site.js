@@ -164,13 +164,13 @@ $(document).ready(function () {
     //select2
     $('.js-select2').select2();
 
-    //date picker
-    $('.js-datepicker').daterangepicker({
-        singleDatePicker: true,
-        drops: 'up',
-        maxDate:new Date(),
+    ////date picker
+    //$('.js-datepicker').daterangepicker({
+    //    singleDatePicker: true,
+    //    drops: 'up',
+    //    maxDate:new Date(),
       
-    });
+    //});
 
 
     //sweetalert

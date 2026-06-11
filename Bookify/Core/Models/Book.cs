@@ -17,7 +17,10 @@
 
         public DateTime PublishingDate { get; set; }
 
-       public string?ImageUrl { get; set; }
+        public string?ImageUrl { get; set; }
+        public string?ThumbnailImageUrl { get; set; }     
+
+        public string? ImagePublicId { get; set; }
 
         [MaxLength(100)]
         public string Hall { get; set; }=null!;

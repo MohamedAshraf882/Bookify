@@ -32,7 +32,7 @@ namespace Bookify.Core.ViewModels
 
         
         [Display(Name = "Publishing Date")]
-        [AssertThat("PublishingDate <= Today()",ErrorMessage =Errors.allowedDate)]
+        [AssertThat("PublishingDate <= Now()",ErrorMessage =Errors.allowedDate)]
         public DateTime PublishingDate { get; set; } = DateTime.Now;
 
 
