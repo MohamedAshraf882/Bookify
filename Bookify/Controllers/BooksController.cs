@@ -45,12 +45,31 @@ namespace Bookify.Controllers
             return View();
         }
 
+
+        public IActionResult Details(int id)
+        {
+            var book=_context.Books
+                .Include(b=>b.Author)
+                .Include(b=>b.Categories)
+                .ThenInclude(c=>c.Category)
+                .SingleOrDefault(b=>b.Id==id);
+            if (book is null)
+            {
+                return NotFound();
+            }
+            var viewmodel= _mapper.Map<BookViewModel>(book);
+            return View(viewmodel);
+
+        }
+
         [HttpGet]
         public IActionResult Create()
         {
 
             return View("Form", PopulateViewModel());
         }
+
+     
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -118,7 +137,7 @@ namespace Bookify.Controllers
 
             _context.Books.Add(book);
             _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new {id=book.Id});
 
 
         }
@@ -169,9 +188,9 @@ namespace Bookify.Controllers
                     {
                         System.IO.File.Delete(oldimagepath);
                     }
-                    if (System.IO.File.Exists(oldthumbimagepath)) 
-                    { 
-                    
+                    if (System.IO.File.Exists(oldthumbimagepath))
+                    {
+
                         System.IO.File.Delete(oldthumbimagepath);
                     }
 
@@ -195,13 +214,13 @@ namespace Bookify.Controllers
 
                 var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books", imageName);
                 var thumbPath = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books/Thumb", imageName);
-               
+
                 using var stream = System.IO.File.Create(path);
                 await model.Image.CopyToAsync(stream);
                 stream.Dispose();
-               
-               model.ImageUrl =$"/Image/Books/{imageName}";
-               model.ThumbnailImageUrl = $"/Images/Books/Thumb/{imageName}";
+
+                model.ImageUrl = $"/Image/Books/{imageName}";
+                model.ThumbnailImageUrl = $"/Images/Books/Thumb/{imageName}";
 
                 using var image = Image.Load(model.Image.OpenReadStream());
                 var ratio = (float)image.Width / 200;
@@ -221,8 +240,10 @@ namespace Bookify.Controllers
 
             }
             else if (!string.IsNullOrEmpty(book.ImageUrl))
+            {
                 model.ImageUrl = book.ImageUrl;
-
+                model.ThumbnailImageUrl = book.ThumbnailImageUrl;
+            }
 
 
             book = _mapper.Map(model, book);
@@ -237,7 +258,7 @@ namespace Bookify.Controllers
             }
 
             _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = book.Id });
         }
 
         private BookFormViewModel PopulateViewModel(BookFormViewModel? model = null)
