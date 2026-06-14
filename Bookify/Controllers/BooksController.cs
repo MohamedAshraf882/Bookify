@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace Bookify.Controllers
 {
@@ -80,23 +82,33 @@ namespace Bookify.Controllers
 
                 var ImageName = $"{Guid.NewGuid()}{extension}";
 
-                //var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books", ImageName);
+                var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books", ImageName);
+                var thumbpath = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books/Thumb", ImageName);
 
-                //using var stream = System.IO.File.Create(path);
-                //await model.Image.CopyToAsync(stream);
-                //book.ImageUrl = ImageName;
+                using var stream = System.IO.File.Create(path);
+                await model.Image.CopyToAsync(stream);
+                stream.Dispose();
+                
+                book.ImageUrl = $"/Images/Books/{ImageName}";
+                book.ThumbnailImageUrl = $"/Images/Books/Thumb/{ImageName}";
 
-                using var stream = model.Image.OpenReadStream();
-                var imageparams = new ImageUploadParams
-                {
-                    File = new FileDescription(ImageName, stream),
-                    UseFilename=true,
+                using var image=Image.Load(model.Image.OpenReadStream());
+                var ratio = (float)image.Width / 200;
+                var height=image.Height / ratio;
+                image.Mutate(i => i.Resize(width:200,height:(int)height));
+                image.Save(thumbpath);
 
-                };
-                var result = await _cloudinary.UploadAsync(imageparams);
-                book.ImageUrl = result.SecureUrl.ToString();
-                book.ThumbnailImageUrl=GetThumbnailImageUrl(book.ImageUrl);
-                book.ImagePublicId= result.PublicId;
+                //using var stream = model.Image.OpenReadStream();
+                //var imageparams = new ImageUploadParams
+                //{
+                //    File = new FileDescription(ImageName, stream),
+                //    UseFilename=true,
+
+                //};
+                //var result = await _cloudinary.UploadAsync(imageparams);
+                //book.ImageUrl = result.SecureUrl.ToString();
+                //book.ThumbnailImageUrl=GetThumbnailImageUrl(book.ImageUrl);
+                //book.ImagePublicId= result.PublicId;
 
             }
 
@@ -131,9 +143,10 @@ namespace Bookify.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(BookFormViewModel model)
         {
-            string imagepublicid = null;
+            //string imagepublicid = null;
             if (!ModelState.IsValid)
             {
                 return View("Form", PopulateViewModel(model));
@@ -150,13 +163,19 @@ namespace Bookify.Controllers
             {
                 if (!string.IsNullOrEmpty(book.ImageUrl))
                 {
-                    //var oldimagepath = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books", book.ImageUrl);
-                    //if (System.IO.File.Exists(oldimagepath))
-                    //{
-                    //    System.IO.File.Delete(oldimagepath);
-                    //}
+                    var oldimagepath = $"{_webHostEnvironment.WebRootPath}{book.ImageUrl}";
+                    var oldthumbimagepath = $"{_webHostEnvironment.WebRootPath}{book.ThumbnailImageUrl}";
+                    if (System.IO.File.Exists(oldimagepath))
+                    {
+                        System.IO.File.Delete(oldimagepath);
+                    }
+                    if (System.IO.File.Exists(oldthumbimagepath)) 
+                    { 
+                    
+                        System.IO.File.Delete(oldthumbimagepath);
+                    }
 
-                    await _cloudinary.DeleteResourcesAsync(book.ImagePublicId);
+                    //await _cloudinary.DeleteResourcesAsync(book.ImagePublicId);
 
                 }
 
@@ -174,19 +193,31 @@ namespace Bookify.Controllers
 
                 var imageName = $"{Guid.NewGuid()}{extension}";
 
-                //var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books", imageName);
-                //using var stream = System.IO.File.Create(path);
-                //await model.Image.CopyToAsync(stream);
-                // model.ImageUrl = imageName;
-                using var stream = model.Image.OpenReadStream();
-                var Imagparme = new ImageUploadParams 
-                { 
-                    File=new FileDescription(imageName, stream),
-                    UseFilename = true
-                };
-                var result=await _cloudinary.UploadAsync(Imagparme);
-                model.ImageUrl = result.SecureUrl.ToString();
-               imagepublicid=result.PublicId;
+                var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books", imageName);
+                var thumbPath = Path.Combine($"{_webHostEnvironment.WebRootPath}/Images/Books/Thumb", imageName);
+               
+                using var stream = System.IO.File.Create(path);
+                await model.Image.CopyToAsync(stream);
+                stream.Dispose();
+               
+               model.ImageUrl =$"/Image/Books/{imageName}";
+               model.ThumbnailImageUrl = $"/Images/Books/Thumb/{imageName}";
+
+                using var image = Image.Load(model.Image.OpenReadStream());
+                var ratio = (float)image.Width / 200;
+                var height = image.Height / ratio;
+                image.Mutate(i => i.Resize(width: 200, height: (int)height));
+                image.Save(thumbPath);
+
+                // using var stream = model.Image.OpenReadStream();
+                // var Imagparme = new ImageUploadParams 
+                // { 
+                //     File=new FileDescription(imageName, stream),
+                //     UseFilename = true
+                // };
+                // var result=await _cloudinary.UploadAsync(Imagparme);
+                // model.ImageUrl = result.SecureUrl.ToString();
+                //imagepublicid=result.PublicId;
 
             }
             else if (!string.IsNullOrEmpty(book.ImageUrl))
@@ -197,9 +228,9 @@ namespace Bookify.Controllers
             book = _mapper.Map(model, book);
             book.LastUpdatedOn = DateTime.Now;
 
-            book.ThumbnailImageUrl = GetThumbnailImageUrl(book.ImageUrl!);
+            //book.ThumbnailImageUrl = GetThumbnailImageUrl(book.ImageUrl!);
 
-            book.ImagePublicId = imagepublicid;
+            //book.ImagePublicId = imagepublicid;
             foreach (var category in model.SelectedCategories)
             {
                 book.Categories.Add(new BookCategory { CategoryId = category });

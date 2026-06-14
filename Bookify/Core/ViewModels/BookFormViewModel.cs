@@ -39,6 +39,7 @@ namespace Bookify.Core.ViewModels
         public IFormFile? Image { get; set; }
 
         public string? ImageUrl { get; set; }
+        public string? ThumbnailImageUrl { get; set; }
 
         [MaxLength(100, ErrorMessage = Errors.MaxLength)]
         public string Hall { get; set; } = null!;
@@ -49,7 +50,7 @@ namespace Bookify.Core.ViewModels
         
         [MaxLength(1000, ErrorMessage = Errors.MaxLength)]
         [Required]
-        public string Descreption { get; set; } = null!;
+        public string Description { get; set; } = null!;
 
         [Required]
         [Display(Name ="Categories")]

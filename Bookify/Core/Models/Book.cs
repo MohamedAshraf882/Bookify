@@ -27,7 +27,7 @@
 
         public bool IsAvailableForRental { get; set; }
 
-        public string Descreption { get; set; }=null!;
+        public string Description { get; set; }=null!;
 
         public ICollection<BookCategory> Categories { get; set; } = new List<BookCategory>();
     }

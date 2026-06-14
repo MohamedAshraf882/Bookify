@@ -28,9 +28,12 @@ function showErrorMessage(message = 'Something went wrong!') {
     });
 }
 
+function disableSubmitButton() {
+    $('body :submit').attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
+}
 function onModalBegin() {
     
-    $('body :submit').prop('disabled', true);
+    disableSubmitButton();
 }
 
 function onModalSuccess(row) {
@@ -149,10 +152,22 @@ var KTDatatables = function () {
 
 $(document).ready(function () {
 
+    //disable submit button
+    $('form').on('submit', function () {
+
+        if ($('.js-tinymce').length > 0) {
+            $('.js-tinymce').each(function () {
+                var content = tinyMCE.get($(this).attr('id')).getContent();
+                $(this).val(content);
+            });
+        }
+        var isvalid = $(this).valid();
+        if (isvalid) disableSubmitButton();
+    });
     //tinymce
 
     if ($('.js-tinymce').length > 0) {
-        var options = { selector: ".js-tinymce", height: "427" };
+        var options = { selector: ".js-tinymce", height: "434" };
 
         if (KTThemeMode.getMode() === "dark") {
             options["skin"] = "oxide-dark";
@@ -163,7 +178,18 @@ $(document).ready(function () {
 
     //select2
     $('.js-select2').select2();
+    $('.js-select2').on('select2:select', function (e) {
+        
+        $('form').validate().element('#' + $(this).attr('id'));
+    });
 
+    $("#PublishingDate").flatpickr({
+        dateFormat: "Y-m-d",
+        defaultDate: "today",
+        maxDate: "today",
+        allowInput: true
+
+    });
     ////date picker
     //$('.js-datepicker').daterangepicker({
     //    singleDatePicker: true,
