@@ -71,3 +71,11 @@ body {
 .invalid-feedback {
     display: block !important;
 }*/
+
+.dt-spinner +div {
+    display: none !important;
+}
+
+.h-70px {
+    height: 70px !important;
+}

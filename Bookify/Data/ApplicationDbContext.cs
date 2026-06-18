@@ -14,17 +14,30 @@ namespace Bookify.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<BookCategory>().HasKey(b => new { b.BookId, b.CategoryId });
-           // builder.Entity<Category>().Property(c=>c.CreatedOn).HasDefaultValueSql("GETDATE()");
+            // builder.Entity<Category>().Property(c=>c.CreatedOn).HasDefaultValueSql("GETDATE()");
+
+            //sequence for book copy serial number
+            builder.HasSequence<int>("SerialNumber", schema: "shared")
+                .StartsAt(1000001);
+            builder.Entity<BookCopy>()
+                .Property(e => e.SerialNumber)
+                .HasDefaultValueSql("NEXT VALUE FOR shared.SerialNumber");
+
+
             base.OnModelCreating(builder);
+
+           
             
         }
 
         public DbSet<Category> Categories { get; set; }
 
+
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book>Books{ get; set; }
         public DbSet<BookCategory> BookCategories { get; set; }
-     
-        
+        public DbSet<BookCopy> BookCopies { get; set; }
+
+
     }
 }

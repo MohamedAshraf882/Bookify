@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using System.Linq.Dynamic.Core;
 
 namespace Bookify.Controllers
 {
@@ -44,6 +45,48 @@ namespace Bookify.Controllers
         {
             return View();
         }
+
+        
+        [HttpPost]
+        public IActionResult GetBooks()
+        {
+            var skip = int.Parse(Request.Form["start"]);
+            var pageSize = int.Parse(Request.Form["length"]);
+
+            var searchvalue = Request.Form["search[value]"];
+
+            var sortcolumnindex = Request.Form["order[0][column]"];
+            var sortcolumn = Request.Form[$"columns[{sortcolumnindex}][name]"];
+            var sortcolumndirection = Request.Form["order[0][dir]"];
+
+            IQueryable<Book> books = _context.Books
+                .Include(b=>b.Author)
+                .Include(b=>b.Categories)
+                .ThenInclude(c=>c.Category);
+
+            if (!string.IsNullOrEmpty(searchvalue))
+            {
+                books = books.Where(b => b.Title.Contains(searchvalue)||b.Author!.Name.Contains(searchvalue));
+            }
+
+           books= books.OrderBy($"{sortcolumn} {sortcolumndirection}");
+            
+            //.Skip(0).Take(10).ToList();
+            var data = books.Skip(skip).Take(pageSize).ToList();
+
+            var mappedData= _mapper.Map<IEnumerable<BookViewModel>>(data);
+
+            var recordstotal = books.Count();
+
+            var jsonData = new { 
+                recordsFiltered=recordstotal,
+                recordsTotal=recordstotal,
+                data=mappedData};
+
+            return Ok(jsonData);
+
+        }
+
 
 
         public IActionResult Details(int id)
@@ -289,6 +332,21 @@ namespace Bookify.Controllers
 
             var thumbnailUrl = $"{urlparts[0]}{separator}c_thumb,w_200,g_face/{urlparts[1]}";
             return thumbnailUrl;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ToggleStatus(int id)
+        {
+            var book = _context.Books.Find(id);
+            if(book is null)
+            {
+                return NotFound();
+            }
+            book.IsDeleted = !book.IsDeleted;
+            book.LastUpdatedOn = DateTime.Now;
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }

@@ -32,7 +32,7 @@ function disableSubmitButton() {
     $('body :submit').attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
 }
 function onModalBegin() {
-    
+
     disableSubmitButton();
 }
 
@@ -66,10 +66,14 @@ $.each(headers, function (i) {
 var KTDatatables = function () {
     // Private functions
     var initDatatable = function () {
-        // Init datatable 
+
+        // Init datatable
         datatable = $(table).DataTable({
             "info": false,
             'pageLength': 10,
+            'drawCallback': function () {
+                KTMenu.createInstances();
+            }
         });
     }
 
@@ -179,7 +183,7 @@ $(document).ready(function () {
     //select2
     $('.js-select2').select2();
     $('.js-select2').on('select2:select', function (e) {
-        
+
         $('form').validate().element('#' + $(this).attr('id'));
     });
 
@@ -195,7 +199,7 @@ $(document).ready(function () {
     //    singleDatePicker: true,
     //    drops: 'up',
     //    maxDate:new Date(),
-      
+
     //});
 
 
@@ -219,7 +223,7 @@ $(document).ready(function () {
 
         if (btn.data('update') !== undefined) {
             updatedRow = btn.parents('tr');
-           
+
         }
 
         $.get({
@@ -267,6 +271,7 @@ $(document).ready(function () {
                             var status = row.find('.js-status');
                             var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
                             status.text(newStatus).toggleClass('badge-light-success badge-light-danger');
+                            DataTable.ajax.reload(null, false);
                             row.find('.js-updated-on').html(lastUpdatedOn);
                             row.addClass('animate__animated animate__flash');
 

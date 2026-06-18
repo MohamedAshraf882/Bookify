@@ -5,34 +5,19 @@
         public int Id { get; set; }
         public string Title { get; set; } = null!;
 
-
         public string Author { get; set; } = null!;
-
-
-        /// to fill the dropdown list of authors in the form
-
-       
         public string Publisher { get; set; } = null!;
 
         public DateTime PublishingDate { get; set; } 
 
-
-      
-
         public string? ImageUrl { get; set; }
         public string? ThumbnailImageUrl { get; set; }
 
-       
         public string Hall { get; set; } = null!;
 
-        
         public bool IsAvailableForRental { get; set; }
 
-
         public string Description { get; set; } = null!;
-
-      
-      
 
         public IEnumerable<string> Categories { get; set; }=null!;
 
