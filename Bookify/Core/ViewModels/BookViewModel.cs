@@ -23,5 +23,7 @@
 
         public bool IsDeleted { get; set; }
         public DateTime CreatedOn { get; set; }
+
+        public IEnumerable<BookCopyViewModel> Copies { get; set; } = null!;
     }
 }

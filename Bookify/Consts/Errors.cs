@@ -10,6 +10,7 @@
        
         public const string NotAllowedExtensions = "only .png , .jpg , .jpeg  Files are allowed!";
         public const string MaxSize = "file can not be more than 2MB!";
+        public const string InvalidRange = "{0} must be between {1} and {2}!";
 
     }
 }
