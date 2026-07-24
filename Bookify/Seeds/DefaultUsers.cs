@@ -14,7 +14,7 @@ namespace Bookify.Seeds
                 EmailConfirmed=true,
             };
 
-            var user=await userManger.FindByNameAsync(admin.UserName);
+            var user=await userManger.FindByEmailAsync(admin.Email);
             if (user == null) 
             {
                 await userManger.CreateAsync(admin,"P@ssword123");

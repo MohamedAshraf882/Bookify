@@ -178,8 +178,8 @@
 					<!--end::Menu item-->
 					<!--begin::Menu item-->
 					<div class="menu-item px-5">
-						<form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
-							<button type="submit" class="menu-link px-5">Sign out</button>
+						<form id="SignOut" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/">
+							<a type="submit" class="menu-link px-5 js-signout">Sign out</a>
 						</form>
 
 					</div>

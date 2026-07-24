@@ -2,6 +2,8 @@
 
 namespace Bookify.Core.Models
 {
+    [Index(nameof(Email),IsUnique =true)]
+    [Index(nameof(UserName),IsUnique =true)]
     public class ApplicationUser:IdentityUser
     {
         [MaxLength(100)]
